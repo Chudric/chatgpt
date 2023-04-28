@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 
 const apiKey = "fed984c5-d34b-43c3-a18c-045a3f331914"
-const baseUrl = "https://api.writesonic.com/v2/business/content/chatsonic?engine=premium&language=zh"
+const baseUrl = "https://api.writesonic.com/v2/business/content/chatsonic?engine=premium"
 
 // HTML 转换为 Markdown 的函数
 function htmlToMarkdown(html) {

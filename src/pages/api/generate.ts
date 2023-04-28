@@ -18,6 +18,9 @@ function htmlToMarkdown(html) {
   return markdown
 }
 
+// 声明一个变量来存储历史数据
+let history_data = []
+
 export const post: APIRoute = async (context) => {
   try {
     const body = await context.request.json()
@@ -30,6 +33,17 @@ export const post: APIRoute = async (context) => {
       }), { status: 400 })
     }
     const input_text = messages[messages.length - 1].content
+
+    // 将历史数据中的最新一条消息作为 ChatSonic 的输入文本
+    if (history_data.length > 0) {
+      const lastMessage = history_data[history_data.length - 1]
+      if (lastMessage.is_sent === false) {
+        history_data.push({ is_sent: true, message: input_text })
+      }
+    } else {
+      history_data.push({ is_sent: true, message: input_text })
+    }
+
     const response = await fetch(baseUrl, {
       headers: {
         'Content-Type': 'application/json',
@@ -39,7 +53,8 @@ export const post: APIRoute = async (context) => {
       body: JSON.stringify({
         enable_google_results: "true",
         enable_memory: true,
-        input_text
+        input_text,
+        history_data,
       }),
     })
 
@@ -47,10 +62,11 @@ export const post: APIRoute = async (context) => {
     const responseData = await response.json()
     const messageContent = responseData.message
 
-    // 将 HTML 转换为 Markdown
-    const markdownContent = htmlToMarkdown(messageContent)
+    // 将 ChatSonic 的回复添加到历史数据中
+    history_data.push({ is_sent: false, message: messageContent })
 
     // 返回 Markdown 格式的 "message" 字段的值
+    const markdownContent = htmlToMarkdown(messageContent)
     return new Response(markdownContent, { status: response.status })
   } catch (err) {
     console.error(err)

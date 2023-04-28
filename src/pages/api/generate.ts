@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro'
 
-const apiKey = import.meta.env.OPENAI_API_KEY
+const apiKey = "fed984c5-d34b-43c3-a18c-045a3f331914"
 const baseUrl = "https://api.writesonic.com/v2/business/content/chatsonic?engine=premium&language=zh"
 
 // HTML 转换为 Markdown 的函数
